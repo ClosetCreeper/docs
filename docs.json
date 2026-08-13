@@ -45,8 +45,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "label": "Ascent",
+      "href": "https://ascent.directory"
     }
   },
   "contextual": {
