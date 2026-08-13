@@ -24,9 +24,10 @@
     "pages": [
       "index",
       {
-        "group": "Regulations",
+        "group": "Regulations & Legal",
         "pages": [
-          "application-requirements"
+          "application-requirements",
+          "untitled-page"
         ]
       }
     ]
