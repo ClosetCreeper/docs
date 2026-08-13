@@ -1,0 +1,85 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "aspen",
+  "name": "Mintlify Starter Kit",
+  "colors": {
+    "primary": "#4a06da",
+    "light": "#4a06da",
+    "dark": "#441480"
+  },
+  "favicon": {
+    "light": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
+    "dark": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp"
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://help.ascent.directory/",
+          "icon": "book-open-cover"
+        }
+      ]
+    },
+    "pages": [
+      "index",
+      {
+        "group": "Regulations",
+        "pages": [
+          "application-requirements"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
+    "dark": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
+    "href": "https://ascent.directory"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:help@ascent.directory"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.mintlify.com"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "discord": "https://discord.gg/D3v9PcbXxd"
+    }
+  },
+  "appearance": {
+    "default": "dark"
+  },
+  "background": {
+    "color": {
+      "dark": "#000000"
+    }
+  },
+  "banner": {
+    "content": "Documentation is actively being written and will be published as available!",
+    "dismissible": true
+  },
+  "description": "Ascent Directory's Official Help Site!",
+  "fonts": {
+    "family": "Open Sans"
+  }
+}
