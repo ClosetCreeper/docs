@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "aspen",
-  "name": "Ascent Directory",
+  "name": "Ascent Verify",
   "colors": {
-    "primary": "#4a06da",
-    "light": "#4a06da",
-    "dark": "#441480"
+    "primary": "#00FFFA",
+    "light": "#00FFFA",
+    "dark": "#00FFFA"
   },
   "favicon": {
     "light": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
@@ -38,9 +38,9 @@
     ]
   },
   "logo": {
-    "light": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
-    "dark": "/images/Gemini_Generated_Image_l1ixcdl1ixcdl1ix-removebg-preview.png.webp",
-    "href": "https://ascent.directory"
+    "light": "/images/logo.svg",
+    "dark": "/images/logo.svg",
+    "href": "https://ascentverify.xyz"
   },
   "navbar": {
     "links": [
@@ -73,19 +73,20 @@
     }
   },
   "appearance": {
-    "default": "dark"
+    "default": "light"
   },
   "background": {
     "color": {
-      "dark": "#000000"
-    }
+      "dark": "#FFFFFF"
+    },
+    "decoration": "gradient"
   },
   "banner": {
     "content": "V1 of Ascent Directory is Out! Documentation updates are still occuring...",
     "dismissible": true
   },
-  "description": "Ascent Directory's Official Help Site!",
+  "description": "Ascent Verify's Official Help Site!",
   "fonts": {
-    "family": "Open Sans"
+    "family": "Plus Jakarta Sans"
   }
 }
