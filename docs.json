@@ -21,20 +21,31 @@
         }
       ]
     },
-    "pages": [
-      "index",
+    "tabs": [
       {
-        "group": "Regulations & Legal",
+        "tab": "Help",
         "pages": [
-          "application-requirements",
-          "affiliate-requirements",
-          "small-server-program",
-          "terms-of-service",
-          "privacy-policy",
-          "partnership-agreement",
-          "non-certification-agreement",
-          "standards-for-affiliation",
-          "affiliation-self-study"
+          "index",
+          {
+            "group": "Regulations & Legal",
+            "pages": [
+              "application-requirements",
+              "affiliate-requirements",
+              "small-server-program",
+              "terms-of-service",
+              "privacy-policy",
+              "partnership-agreement",
+              "non-certification-agreement",
+              "standards-for-affiliation",
+              "affiliation-self-study"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "News",
+        "pages": [
+          "introducing-workflows"
         ]
       }
     ]
