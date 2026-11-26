@@ -1,0 +1,357 @@
+openapi: 3.1.0
+info:
+  title: Ascent Verify API
+  version: 1.0.0-draft
+  summary: Read your server's Ascent verifications from your own bot or website.
+  description: |
+    The Ascent Verify API lets a server's own tools check who has verified with Ascent in that server.
+
+    **Status:** draft. Nothing here is live yet.
+
+    ## Authentication
+    Every request needs an API key, sent as a Bearer token:
+
+    ```
+    Authorization: Bearer asc_live_xxxxxxxxxxxxxxxxxxxxxxxx
+    ```
+
+    Server owners (and staff with **Control Modules**) create keys on the server's **API** page on
+    ascentverify.xyz. A key is shown once when it's created, so copy it then. Each key belongs to one
+    server, and only ever returns data for that server. Keep keys secret: use them from your server or
+    bot, never in a web page or app that other people can open.
+
+    ## Privacy
+    A key can only see members who have verified in its server or sent their Ascent card to it.
+    Looking up anyone else returns `404`, the same as a Discord ID that has never used Ascent, so a key
+    can't be used to check strangers. The API never returns email addresses.
+
+    ## Rate limits
+    Limits are per key, by the server owner's plan. Every response includes:
+
+    | Header | Meaning |
+    | --- | --- |
+    | `X-RateLimit-Limit` | Requests allowed per minute |
+    | `X-RateLimit-Remaining` | Requests left this minute |
+    | `X-RateLimit-Reset` | Seconds until the limit resets |
+
+    Going over returns `429` with a `Retry-After` header.
+
+    ## Errors
+    Errors return a JSON body with a machine-readable `error` code and a human-readable `message`.
+  contact:
+    name: Ascent support
+    email: help@ascent.directory
+  termsOfService: https://help.ascentverify.xyz/terms-of-service
+
+servers:
+  - url: https://api.ascentverify.xyz
+    description: Production
+
+security:
+  - apiKey: []
+
+tags:
+  - name: Members
+    description: Check whether someone is verified in your server.
+  - name: Server
+    description: Your server, and its verification numbers.
+  - name: Verifications
+    description: Every verification in your server, newest first.
+
+paths:
+  /v1/users/{discordId}:
+    get:
+      operationId: getUser
+      tags: [Members]
+      summary: Check a member
+      description: |
+        Whether this Discord account is verified with Ascent, and when it verified in your server or
+        sent you its card. Only works for members who have done one of those in your server; anyone
+        else returns `404`.
+      parameters:
+        - $ref: "#/components/parameters/DiscordId"
+      responses:
+        "200":
+          description: The member.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Member" }
+              example:
+                discord_id: "1378514741248659497"
+                ascent_id: AS366425222
+                verified: true
+                verified_at: "2026-11-25T23:20:11Z"
+                verified_in_server_at: "2026-11-26T09:02:47Z"
+                card_sent_at: null
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /v1/server:
+    get:
+      operationId: getServer
+      tags: [Server]
+      summary: Get your server
+      description: The server this key belongs to.
+      responses:
+        "200":
+          description: The server.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Server" }
+              example:
+                guild_id: "1309812345678901234"
+                name: Summit County Roleplay
+                icon_url: https://cdn.discordapp.com/icons/1309812345678901234/abc123.png
+                member_count: 742
+                plan: pro
+                modules: [verification, moderation, logging]
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /v1/server/stats:
+    get:
+      operationId: getServerStats
+      tags: [Server]
+      summary: Get verification numbers
+      description: Totals for your server, worked out when you ask.
+      responses:
+        "200":
+          description: The numbers.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ServerStats" }
+              example:
+                verifications_total: 318
+                verifications_30d: 41
+                cards_received_total: 57
+                cards_opened_total: 49
+                as_of: "2026-11-26T12:00:00Z"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /v1/verifications:
+    get:
+      operationId: listVerifications
+      tags: [Verifications]
+      summary: List verifications
+      description: |
+        Everyone who verified in your server, newest first, a page at a time. To get the next page,
+        pass the `next_cursor` from the last response as `cursor`. `next_cursor` is `null` on the last page.
+      parameters:
+        - name: since
+          in: query
+          description: Only verifications after this time.
+          schema: { type: string, format: date-time }
+          example: "2026-11-01T00:00:00Z"
+        - name: limit
+          in: query
+          description: How many to return.
+          schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+        - name: cursor
+          in: query
+          description: The `next_cursor` from the previous page.
+          schema: { type: string }
+      responses:
+        "200":
+          description: A page of verifications.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/RateLimitLimit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/RateLimitRemaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/RateLimitReset" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/VerificationPage" }
+              example:
+                data:
+                  - discord_id: "1378514741248659497"
+                    ascent_id: AS366425222
+                    verified_at: "2026-11-26T09:02:47Z"
+                  - discord_id: "1256816509158686754"
+                    ascent_id: AS159466556
+                    verified_at: "2026-11-25T18:40:03Z"
+                next_cursor: eyJpZCI6MTIzfQ
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+components:
+  securitySchemes:
+    apiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: asc_live_…
+      description: Your server's API key, from the server's **API** page on ascentverify.xyz.
+
+  parameters:
+    DiscordId:
+      name: discordId
+      in: path
+      required: true
+      description: The member's Discord user ID.
+      schema: { type: string, pattern: "^\\d{17,20}$" }
+      example: "1378514741248659497"
+
+  headers:
+    RateLimitLimit:
+      description: Requests allowed per minute for this key.
+      schema: { type: integer }
+    RateLimitRemaining:
+      description: Requests left this minute.
+      schema: { type: integer }
+    RateLimitReset:
+      description: Seconds until the limit resets.
+      schema: { type: integer }
+
+  schemas:
+    Member:
+      type: object
+      required: [discord_id, ascent_id, verified, verified_at, verified_in_server_at, card_sent_at]
+      properties:
+        discord_id:
+          type: string
+          description: The member's Discord user ID.
+        ascent_id:
+          type: string
+          description: The member's Ascent ID.
+          example: AS366425222
+        verified:
+          type: boolean
+          description: Whether the account is verified with Ascent right now.
+        verified_at:
+          type: [string, "null"]
+          format: date-time
+          description: When the account got verified with Ascent.
+        verified_in_server_at:
+          type: [string, "null"]
+          format: date-time
+          description: When they last verified in your server, or `null` if they haven't.
+        card_sent_at:
+          type: [string, "null"]
+          format: date-time
+          description: When they last sent their card to your server, or `null` if they haven't.
+
+    Server:
+      type: object
+      required: [guild_id, name, icon_url, member_count, plan, modules]
+      properties:
+        guild_id:
+          type: string
+          description: The Discord server ID.
+        name:
+          type: string
+        icon_url:
+          type: [string, "null"]
+          format: uri
+        member_count:
+          type: [integer, "null"]
+          description: As of the last time Ascent checked.
+        plan:
+          type: string
+          enum: [basic, pro, enterprise]
+          description: The server owner's Ascent plan.
+        modules:
+          type: array
+          description: The features turned on in this server.
+          items:
+            type: string
+            enum: [verification, moderation, logging, workflows, profile]
+
+    ServerStats:
+      type: object
+      required: [verifications_total, verifications_30d, cards_received_total, cards_opened_total, as_of]
+      properties:
+        verifications_total:
+          type: integer
+          description: Verifications in your server, ever.
+        verifications_30d:
+          type: integer
+          description: Verifications in the last 30 days.
+        cards_received_total:
+          type: integer
+          description: Cards members have sent to your server.
+        cards_opened_total:
+          type: integer
+          description: Of those, how many your staff opened with the member's code.
+        as_of:
+          type: string
+          format: date-time
+
+    Verification:
+      type: object
+      required: [discord_id, ascent_id, verified_at]
+      properties:
+        discord_id:
+          type: string
+        ascent_id:
+          type: string
+        verified_at:
+          type: string
+          format: date-time
+          description: When they verified in your server.
+
+    VerificationPage:
+      type: object
+      required: [data, next_cursor]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/Verification" }
+        next_cursor:
+          type: [string, "null"]
+          description: Pass as `cursor` to get the next page; `null` on the last page.
+
+    Error:
+      type: object
+      required: [error, message]
+      properties:
+        error:
+          type: string
+          description: A code you can check in your code.
+          enum: [bad_request, unauthorized, not_found, rate_limited, server_error]
+        message:
+          type: string
+          description: What went wrong, in plain words.
+
+  responses:
+    BadRequest:
+      description: Something in the request isn't valid.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: bad_request, message: "discordId must be a Discord user ID (17 to 20 digits)." }
+    Unauthorized:
+      description: The API key is missing, wrong, or revoked.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: unauthorized, message: "This API key isn't valid. Check it, or make a new one on your server's API page." }
+    NotFound:
+      description: No member with this ID has verified in your server or sent you their card.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: not_found, message: "No member with that Discord ID has verified in this server." }
+    RateLimited:
+      description: Too many requests. Wait for `Retry-After` seconds.
+      headers:
+        Retry-After:
+          description: Seconds to wait before trying again.
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example: { error: rate_limited, message: "Too many requests. Try again in 12 seconds." }
