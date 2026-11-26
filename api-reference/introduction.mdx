@@ -19,13 +19,13 @@ curl https://api.ascentverify.xyz/v1/server \
   -H "Authorization: Bearer asc_live_xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-Server owners, and staff with **Control Modules**, create keys on the server's **API** page on ascentverify.xyz. A key is shown once when it's created, so copy it then. Each key belongs to one server and only returns data for that server. A server can have up to 5 keys. Each key lasts 30, 90 or 365 days, or never expires, chosen when it's made. Make a new key before an old one runs out.
+Server owners, and staff with **Control Modules**, create keys on the server's **API** page on ascentverify.xyz. A key is shown only once when it's created, so copy it then. Each key belongs to one server and only returns data for that server. A server can have up to 5 keys. Each key lasts 30, 90 or 365 days, or never expires, chosen when it's made. Make a new key before an old one runs out.
 
 Keep keys secret. Use them from your own server or bot, never in a web page or app that other people can open.
 
 ## Privacy
 
-A key can only see members who have verified in its server or sent their Ascent card to it. Looking up anyone else returns `404`, the same as a Discord ID that has never used Ascent, so a key can't be used to check strangers. The API never returns email addresses.
+A key can only see members who have verified in its server or sent their Ascent card to it. Looking up anyone else returns `404`, the same as a Discord ID that has never used Ascent, so a key can't be used to check strangers.
 
 ## Rate limits
 
