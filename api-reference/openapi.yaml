@@ -17,7 +17,8 @@ info:
 
     Server owners (and staff with **Control Modules**) create keys on the server's **API** page on
     ascentverify.xyz. A key is shown once when it's created, so copy it then. Each key belongs to one
-    server, and only ever returns data for that server. Keep keys secret: use them from your server or
+    server, and only ever returns data for that server. A server can have up to 5 keys. Each key lasts
+    30, 90 or 365 days, or never expires, chosen when it's made; make a new one before it runs out. Keep keys secret: use them from your server or
     bot, never in a web page or app that other people can open.
 
     ## Privacy
@@ -334,11 +335,11 @@ components:
           schema: { $ref: "#/components/schemas/Error" }
           example: { error: bad_request, message: "discordId must be a Discord user ID (17 to 20 digits)." }
     Unauthorized:
-      description: The API key is missing, wrong, or revoked.
+      description: The API key is missing, wrong, revoked, or expired.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
-          example: { error: unauthorized, message: "This API key isn't valid. Check it, or make a new one on your server's API page." }
+          example: { error: unauthorized, message: "This API key isn't valid or has expired. Check it, or make a new one on your server's API page." }
     NotFound:
       description: No member with this ID has verified in your server or sent you their card.
       content:
