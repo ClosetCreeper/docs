@@ -50,25 +50,30 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "api-reference/openapi.yaml",
         "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
           {
             "group": "Members",
             "pages": [
-              "GET /v1/users/{discordId}"
+              "api-reference/members/check-member"
             ]
           },
           {
             "group": "Server",
             "pages": [
-              "GET /v1/server",
-              "GET /v1/server/stats"
+              "api-reference/server/get-server",
+              "api-reference/server/get-stats"
             ]
           },
           {
             "group": "Verifications",
             "pages": [
-              "GET /v1/verifications"
+              "api-reference/verifications/list-verifications"
             ]
           }
         ]
