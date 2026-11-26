@@ -47,6 +47,36 @@
         "pages": [
           "introducing-workflows"
         ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Members",
+            "pages": [
+              "api-reference/members/check-member"
+            ]
+          },
+          {
+            "group": "Server",
+            "pages": [
+              "api-reference/server/get-server",
+              "api-reference/server/get-stats"
+            ]
+          },
+          {
+            "group": "Verifications",
+            "pages": [
+              "api-reference/verifications/list-verifications"
+            ]
+          }
+        ]
       }
     ]
   },
